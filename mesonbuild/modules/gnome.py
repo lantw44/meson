@@ -565,6 +565,7 @@ class GnomeModule(ExtensionModule):
         ldflags += list(dep_ldflags)
         scan_command += ['--cflags-begin']
         scan_command += cflags
+        scan_command += state.environment.coredata.external_args[lang]
         scan_command += ['--cflags-end']
         # need to put our output directory first as we need to use the
         # generated libraries instead of any possibly installed system/prefix
@@ -595,6 +596,8 @@ class GnomeModule(ExtensionModule):
                 d = os.path.join(state.environment.get_build_dir(), d)
                 scan_command.append('-L' + d)
             scan_command += ['--library', libname]
+        scan_command += filter(lambda s: s.startswith('-L'),
+                               state.environment.coredata.external_link_args[lang])
         scankwargs = {'output': girfile,
                       'command': scan_command,
                       'depends': depends}
